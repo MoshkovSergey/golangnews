@@ -7,7 +7,7 @@ import (
 )
 
 func main() {
-	fmt.Println("I stand a golang developer!")
+	fmt.Println("I want stand a golang developer!")
 	http.HandleFunc("/", handleFunc)
 	fmt.Println("Server runing on port 8080")
 	http.ListenAndServe(":8080", nil)
@@ -15,5 +15,5 @@ func main() {
 }
 
 func handleFunc(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintf(w, "Hello World! %s", time.Now())
+	fmt.Fprintf(w, "<h1>Hello World! %s</h1>", time.Now())
 }
