@@ -1,0 +1,7 @@
+{
+    "files.autoSave": "afterDelay",
+    "editor.autoClosingQuotes": "always",
+    "editor.autoClosingBrackets": "always",
+    "editor.autoClosingComments": "always",
+    "editor.autoClosingDelete": "always"
+}

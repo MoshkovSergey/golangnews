@@ -11,7 +11,7 @@ func main() {
 	http.HandleFunc("/", handleFunc)
 	fmt.Println("Server runing on port 8080")
 	http.ListenAndServe(":8080", nil)
-	
+
 }
 
 func handleFunc(w http.ResponseWriter, r *http.Request) {
