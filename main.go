@@ -6,22 +6,24 @@ import (
 	"time"
 )
 
+
 // main is the entry point of the Go program.
 // It sets up the HTTP server to handle requests to the "/" and "/contact" routes.
 func main() {
 	// Print a welcome message.
-	fmt.Println("I want stand a golang developer!")
+	fmt.Println("I want to stand as a Go developer!")
 
 	// Set up the routes for the HTTP server.
+	// The path "/" is handled by the "pathHandler" function,
+	// which serves different pages based on the requested URL path.
 	http.HandleFunc("/", pathHandler)
-	// http.HandleFunc("/", homeHandler)           // Set up the route for the home page.
-	// http.HandleFunc("/contact", contactHandler) // Set up the route for the contact page.
 
 	// Print a message indicating that the server is running on port 8080.
 	fmt.Println("Server running on port 8080")
 
 	// Start the HTTP server and listen for incoming requests on port 8080.
 	// The third argument is nil, which means that the server will use the default ServeMux.
+	fmt.Println("Listening for incoming requests...")
 	http.ListenAndServe(":8080", nil)
 }
 
