@@ -10,8 +10,6 @@ import (
 // main is the entry point of the Go program.
 // It sets up the HTTP server to handle requests to the "/" and "/contact" routes.
 func main() {
-	// Print a welcome message.
-	fmt.Println("I want to stand as a Go developer!")
 
 	// Set up the routes for the HTTP server.
 	// The path "/" is handled by the "pathHandler" function,
@@ -44,7 +42,7 @@ func homeHandler(w http.ResponseWriter, _ *http.Request) {
 	fmt.Fprintf(w, `<h1>Hello World! %s</h1>
 	<form method="post" action="/contact">
 	<button>Contacts</button>
-	</form>`, time.Now())
+	</form>`, time.Now().Format("2006-01-02 15:04:05"))
 }
 
 // contactHandler is an HTTP handler function that serves the contact page.
@@ -66,6 +64,19 @@ func contactHandler(w http.ResponseWriter, r *http.Request) {
 	<p>Telegram: @sergey</p>
 	<a href="/">Назад</a>
 	<a href="mailto:5Lj9Z@example.com">Написать</a><br>`)
+}
+
+func pageNotFound(w http.ResponseWriter, r *http.Request) {
+	// Set the "Content-Type" header to indicate that the response
+	// is an HTML document in UTF-8 encoding.
+	w.Header().Set("Content-Type", "text/html; charset=utf-8")
+
+	// Use fmt.Fprintf to write the HTML response to the ResponseWriter.
+	// The first argument is the ResponseWriter, to which the formatted
+	// string is written. The second argument is a formatted string
+	// that includes information about the developer's contacts and
+	// links to go back to the home page and send an email.
+	fmt.Fprint(w, `<h1>Страница не найдена</h1>`)
 
 	fmt.Fprint(w, r.URL)
 }
@@ -86,7 +97,7 @@ func pathHandler(w http.ResponseWriter, r *http.Request) {
 		contactHandler(w, r)
 
 	default: // If the path is anything else, send a "404 Not Found" response.
-		http.NotFound(w, r)
-		// TODO: add 404 page
+		// pageNotFound(w, r)
+		http.Error(w, "Страница не найдена", http.StatusNotFound)
 	}
 }
