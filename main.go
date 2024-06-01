@@ -6,7 +6,6 @@ import (
 	"time"
 )
 
-
 // main is the entry point of the Go program.
 // It sets up the HTTP server to handle requests to the "/" and "/contact" routes.
 func main() {
@@ -22,7 +21,10 @@ func main() {
 	// Start the HTTP server and listen for incoming requests on port 8080.
 	// The third argument is nil, which means that the server will use the default ServeMux.
 	fmt.Println("Listening for incoming requests...")
-	http.ListenAndServe(":8080", nil)
+	err := http.ListenAndServe(":8080", nil)
+	if err != nil {
+		return
+	}
 }
 
 // homeHandler is an HTTP handler function that serves the home page.
@@ -49,7 +51,7 @@ func homeHandler(w http.ResponseWriter, _ *http.Request) {
 // It sets the "Content-Type" header to "text/html; charset=utf-8"
 // and writes an HTML response containing information about the developer's contacts.
 // The response includes a link to go back to the home page and a link to send an email.
-func contactHandler(w http.ResponseWriter, r *http.Request) {
+func contactHandler(w http.ResponseWriter, _ *http.Request) {
 	// Set the "Content-Type" header to indicate that the response
 	// is an HTML document in UTF-8 encoding.
 	w.Header().Set("Content-Type", "text/html; charset=utf-8")
@@ -59,27 +61,26 @@ func contactHandler(w http.ResponseWriter, r *http.Request) {
 	// string is written. The second argument is a formatted string
 	// that includes information about the developer's contacts and
 	// links to go back to the home page and send an email.
-	fmt.Fprint(w, `<h1>Контакты</h1>
+	fmt.Fprintf(w, `<h1>Контакты</h1>
 	<p>Sergey</p>
 	<p>Telegram: @sergey</p>
 	<a href="/">Назад</a>
 	<a href="mailto:5Lj9Z@example.com">Написать</a><br>`)
 }
 
-func pageNotFound(w http.ResponseWriter, r *http.Request) {
+// func pageNotFound(w http.ResponseWriter, r *http.Request) {
 	// Set the "Content-Type" header to indicate that the response
 	// is an HTML document in UTF-8 encoding.
-	w.Header().Set("Content-Type", "text/html; charset=utf-8")
+	// w.Header().Set("Content-Type", "text/html; charset=utf-8")
 
 	// Use fmt.Fprintf to write the HTML response to the ResponseWriter.
 	// The first argument is the ResponseWriter, to which the formatted
 	// string is written. The second argument is a formatted string
 	// that includes information about the developer's contacts and
 	// links to go back to the home page and send an email.
-	fmt.Fprint(w, `<h1>Страница не найдена</h1>`)
-
-	fmt.Fprint(w, r.URL)
-}
+	// fmt.Fprintf(w, `<h1>Страница не найдена</h1>`)
+	// http.Error(w, "Страница не найдена", http.StatusNotFound)
+// }
 
 // pathHandler is an HTTP handler function that serves different pages
 // based on the requested URL path.
@@ -98,6 +99,6 @@ func pathHandler(w http.ResponseWriter, r *http.Request) {
 
 	default: // If the path is anything else, send a "404 Not Found" response.
 		// pageNotFound(w, r)
-		http.Error(w, "Страница не найдена", http.StatusNotFound)
+		http.Error(w, "страница не найдена", http.StatusNotFound)
 	}
 }
