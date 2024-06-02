@@ -6,27 +6,6 @@ import (
 	"time"
 )
 
-// main is the entry point of the Go program.
-// It sets up the HTTP server to handle requests to the "/" and "/contact" routes.
-func main() {
-
-	// Set up the routes for the HTTP server.
-	// The path "/" is handled by the "pathHandler" function,
-	// which serves different pages based on the requested URL path.
-	http.HandleFunc("/", pathHandler)
-
-	// Print a message indicating that the server is running on port 8080.
-	fmt.Println("Server running on port 8080")
-
-	// Start the HTTP server and listen for incoming requests on port 8080.
-	// The third argument is nil, which means that the server will use the default ServeMux.
-	fmt.Println("Listening for incoming requests...")
-	err := http.ListenAndServe(":8080", nil)
-	if err != nil {
-		return
-	}
-}
-
 // homeHandler is an HTTP handler function that serves the home page.
 // It sets the "Content-Type" header to "text/html; charset=utf-8"
 // and writes an HTML response containing the current time and a form
@@ -41,10 +20,10 @@ func homeHandler(w http.ResponseWriter, _ *http.Request) {
 	// string is written. The second argument is a formatted string
 	// that includes the current time and a form with a button that
 	// redirects to the "/contact" route when clicked.
-	fmt.Fprintf(w, `<h1>Hello World! %s</h1>
+	fmt.Fprintf(w, `<h1>Привет мир! Сейчас в Санкт-Петербурге: %s.</h1>
 	<form method="post" action="/contact">
 	<button>Contacts</button>
-	</form>`, time.Now().Format("2006-01-02 15:04:05"))
+	</form>`, time.Now().Format(" 15:04:05 02-01-2006"))
 }
 
 // contactHandler is an HTTP handler function that serves the contact page.
@@ -69,17 +48,17 @@ func contactHandler(w http.ResponseWriter, _ *http.Request) {
 }
 
 // func pageNotFound(w http.ResponseWriter, r *http.Request) {
-	// Set the "Content-Type" header to indicate that the response
-	// is an HTML document in UTF-8 encoding.
-	// w.Header().Set("Content-Type", "text/html; charset=utf-8")
+// Set the "Content-Type" header to indicate that the response
+// is an HTML document in UTF-8 encoding.
+// w.Header().Set("Content-Type", "text/html; charset=utf-8")
 
-	// Use fmt.Fprintf to write the HTML response to the ResponseWriter.
-	// The first argument is the ResponseWriter, to which the formatted
-	// string is written. The second argument is a formatted string
-	// that includes information about the developer's contacts and
-	// links to go back to the home page and send an email.
-	// fmt.Fprintf(w, `<h1>Страница не найдена</h1>`)
-	// http.Error(w, "Страница не найдена", http.StatusNotFound)
+// Use fmt.Fprintf to write the HTML response to the ResponseWriter.
+// The first argument is the ResponseWriter, to which the formatted
+// string is written. The second argument is a formatted string
+// that includes information about the developer's contacts and
+// links to go back to the home page and send an email.
+// fmt.Fprintf(w, `<h1>Страница не найдена</h1>`)
+// http.Error(w, "Страница не найдена", http.StatusNotFound)
 // }
 
 // pathHandler is an HTTP handler function that serves different pages
@@ -98,7 +77,40 @@ func pathHandler(w http.ResponseWriter, r *http.Request) {
 		contactHandler(w, r)
 
 	default: // If the path is anything else, send a "404 Not Found" response.
-		// pageNotFound(w, r)
 		http.Error(w, "страница не найдена", http.StatusNotFound)
+	}
+}
+
+type Router struct {}
+
+
+// ServeHTTP is the method that satisfies the http.Handler interface.
+// It calls the pathHandler function to serve different pages based on the requested URL path.
+// It takes in a http.ResponseWriter and a *http.Request as parameters.
+// It does not return anything.
+func (router Router) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	// Call the pathHandler function to serve different pages based on the requested URL path.
+	// The pathHandler function takes in a http.ResponseWriter and a *http.Request as parameters.
+	// It does not return anything.
+	pathHandler(w, r)
+}
+
+// main is the entry point of the Go program.
+// It sets up the HTTP server to handle requests to the "/" and "/contact" routes.
+func main() {
+	var router Router
+	// Set up the routes for the HTTP server.
+	// The path "/" is handled by the "pathHandler" function,
+	// which serves different pages based on the requested URL path.
+
+	// Print a message indicating that the server is running on port 8080.
+	fmt.Println("Server running on port 8080")
+
+	// Start the HTTP server and listen for incoming requests on port 8080.
+	// The third argument is nil, which means that the server will use the default ServeMux.
+	fmt.Println("Listening for incoming requests...")
+	err := http.ListenAndServe(":8080", router)
+	if err != nil {
+		return
 	}
 }
