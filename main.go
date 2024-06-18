@@ -43,8 +43,7 @@ func contactHandler(w http.ResponseWriter, _ *http.Request) {
 	fmt.Fprintf(w, `<h1>Контакты</h1>
 	<p>Sergey</p>
 	<p>Telegram: @sergey</p>
-	<a href="/">Назад</a>
-	<a href="mailto:5Lj9Z@example.com">Написать</a><br>`)
+	<a href="/">Назад</a><br>`)
 }
 
 // func pageNotFound(w http.ResponseWriter, r *http.Request) {
@@ -66,9 +65,28 @@ func contactHandler(w http.ResponseWriter, _ *http.Request) {
 // It sets the "Content-Type" header to "text/html; charset=utf-8"
 // and writes an HTML response containing the home page or the contact page.
 // If the requested URL path is not "/" or "/contact", it sends a "404 Not Found" response.
-func pathHandler(w http.ResponseWriter, r *http.Request) {
-	// Switch statement checks the requested URL path and calls
-	// the appropriate handler function.
+// func pathHandler(w http.ResponseWriter, r *http.Request) {
+// 	// Switch statement checks the requested URL path and calls
+// 	// the appropriate handler function.
+// 	switch r.URL.Path {
+// 	case "/": // If the path is "/", call the homeHandler.
+// 		homeHandler(w, r)
+
+// 	case "/contact": // If the path is "/contact", call the contactHandler.
+// 		contactHandler(w, r)
+
+// 	default: // If the path is anything else, send a "404 Not Found" response.
+// 		http.Error(w, "страница не найдена", http.StatusNotFound)
+// 	}
+// }
+
+type Router struct{}
+
+// ServeHTTP is the method that satisfies the http.Handler interface.
+// It calls the pathHandler function to serve different pages based on the requested URL path.
+// It takes in a http.ResponseWriter and a *http.Request as parameters.
+// It does not return anything.
+func (router Router) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	switch r.URL.Path {
 	case "/": // If the path is "/", call the homeHandler.
 		homeHandler(w, r)
@@ -79,30 +97,15 @@ func pathHandler(w http.ResponseWriter, r *http.Request) {
 	default: // If the path is anything else, send a "404 Not Found" response.
 		http.Error(w, "страница не найдена", http.StatusNotFound)
 	}
-}
-
-type Router struct {}
-
-
-// ServeHTTP is the method that satisfies the http.Handler interface.
-// It calls the pathHandler function to serve different pages based on the requested URL path.
-// It takes in a http.ResponseWriter and a *http.Request as parameters.
-// It does not return anything.
-func (router Router) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	// Call the pathHandler function to serve different pages based on the requested URL path.
 	// The pathHandler function takes in a http.ResponseWriter and a *http.Request as parameters.
 	// It does not return anything.
-	pathHandler(w, r)
 }
 
 // main is the entry point of the Go program.
 // It sets up the HTTP server to handle requests to the "/" and "/contact" routes.
 func main() {
 	var router Router
-	// Set up the routes for the HTTP server.
-	// The path "/" is handled by the "pathHandler" function,
-	// which serves different pages based on the requested URL path.
-
 	// Print a message indicating that the server is running on port 8080.
 	fmt.Println("Server running on port 8080")
 
