@@ -2,9 +2,10 @@ package main
 
 import (
 	"fmt"
+	"github.com/go-chi/chi/v5"
+	"github.com/go-chi/chi/v5/middleware"
 	"net/http"
 	"time"
-	"github.com/go-chi/chi/v5"
 )
 
 // homeHandler is an HTTP handler function that serves the home page.
@@ -71,7 +72,6 @@ func faqHandler(w http.ResponseWriter, _ *http.Request) {
 	`)
 }
 
-
 type Router struct{}
 
 // ServeHTTP is the method that satisfies the http.Handler interface.
@@ -99,15 +99,20 @@ func (router Router) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 // main is the entry point of the Go program.
 // It sets up the HTTP server to handle requests to the "/" and "/contact" routes.
 func main() {
-	var router Router
+	r := chi.NewRouter()
+	r.Use(middleware.Logger)
+	// var router Router
 	// Print a message indicating that the server is running on port 8080.
 	fmt.Println("Server running on port 8080")
 
 	// Start the HTTP server and listen for incoming requests on port 8080.
 	// The third argument is nil, which means that the server will use the default ServeMux.
 	fmt.Println("Listening for incoming requests...")
-	err := http.ListenAndServe(":8080", router)
+	r.Get("/", homeHandler)
+	// Start the HTTP server and listen for incoming requests on port 8080.
+	err := http.ListenAndServe(":8080", r)
 	if err != nil {
 		return
 	}
+
 }
