@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"net/http"
 	"time"
+	"github.com/go-chi/chi/v5"
 )
 
 // homeHandler is an HTTP handler function that serves the home page.
