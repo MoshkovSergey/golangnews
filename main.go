@@ -110,10 +110,10 @@ func main() {
 	// The third argument is nil, which means that the server will use the default ServeMux.
 	fmt.Println("Listening for incoming requests...")
 	r.Group(func(r chi.Router) {
-        r.Get("/", homeHandler)
-        r.Get("/contact", contactHandler)
-        r.Get("/faq", faqHandler)
-    })
+		r.Get("/", homeHandler)
+		r.Get("/contact", contactHandler)
+		r.Get("/faq", faqHandler)
+	})
 	// Start the HTTP server and listen for incoming requests on port 8080.
 	err := http.ListenAndServe(":8080", r)
 	if err != nil {
