@@ -24,10 +24,10 @@ func homeHandler(w http.ResponseWriter, _ *http.Request) {
 	// redirects to the "/contact" route when clicked.
 	// for {}
 	fmt.Fprintf(w, `<h1>Привет мир! Сейчас в Санкт-Петербурге: %s.</h1>
-	<form method="post" action="/contact">
+	<form method="get" action="/contact">
 	<button>Contacts</button>
 	</form>
-	<form method="post" action="/faq">
+	<form method="get" action="/faq">
 	<button>FAQ</button>
 	</form>
 	`, time.Now().Format(" 15:04:05 02-01-2006"))
@@ -47,7 +47,7 @@ func contactHandler(w http.ResponseWriter, _ *http.Request) {
 	// string is written. The second argument is a formatted string
 	// that includes information about the developer's contacts and
 	// links to go back to the home page and send an email.
-	fmt.Fprintf(w, `<h1>Контакты</h1>
+	fmt.Fprint(w, `<h1>Контакты</h1>
 	<p>Sergey</p>
 	<p>Telegram: @sergey</p>
 	<a href="/">Назад</a><br>`)
@@ -63,7 +63,7 @@ func faqHandler(w http.ResponseWriter, _ *http.Request) {
 	// string is written. The second argument is a formatted string
 	// that includes information about the developer's contacts and
 	// links to go back to the home page and send an email.
-	fmt.Fprintf(w, `<h1>FAQ</h1>
+	fmt.Fprint(w, `<h1>FAQ</h1>
 	<p>Sergey</p>
 	<p>Sergey</p>
 	<p>Sergey</p>
@@ -72,6 +72,7 @@ func faqHandler(w http.ResponseWriter, _ *http.Request) {
 	`)
 }
 
+// Router is a struct that satisfies the http.Handler interface.
 type Router struct{}
 
 // ServeHTTP is the method that satisfies the http.Handler interface.
@@ -83,10 +84,10 @@ func (router Router) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	case "/": // If the path is "/", call the homeHandler.
 		homeHandler(w, r)
 
-	case "/contact": // If the path is "/contact", call the contactHandler.
+	case "contact": // If the path is "/contact", call the contactHandler.
 		contactHandler(w, r)
 
-	case "/faq": // If the path is "/contact", call the contactHandler.
+	case "faq": // If the path is "/contact", call the contactHandler.
 		faqHandler(w, r)
 	default: // If the path is anything else, send a "404 Not Found" response.
 		http.Error(w, "страница не найдена", http.StatusNotFound)
@@ -108,7 +109,11 @@ func main() {
 	// Start the HTTP server and listen for incoming requests on port 8080.
 	// The third argument is nil, which means that the server will use the default ServeMux.
 	fmt.Println("Listening for incoming requests...")
-	r.Get("/", homeHandler)
+	r.Group(func(r chi.Router) {
+        r.Get("/", homeHandler)
+        r.Get("/contact", contactHandler)
+        r.Get("/faq", faqHandler)
+    })
 	// Start the HTTP server and listen for incoming requests on port 8080.
 	err := http.ListenAndServe(":8080", r)
 	if err != nil {
